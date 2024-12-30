@@ -1,74 +1,98 @@
 import '../styles/Questions.css';
 import { useState, useEffect } from 'react';
 
-export default function Questions({ randomCountries, setAnswerCounter }) {
+export default function Questions({ randomCountries, answerCounter, setAnswerCounter, setCorrectAnswers }) {
 	const [selectedAnswer, setSelectedAnswer] = useState(null);
 	const [answered, setAnswered] = useState(false);
+	const [usedQuestions, setUsedQuestions] = useState([]);
 
 	const [questionData, setQuestionData] = useState({
 		question: '',
 		options: [],
 		correctAnswer: '',
+		flag: null,
 	});
 
 	const generateQuestion = () => {
 		if (!randomCountries || randomCountries.length < 4) return;
 
-		const correctCountry = randomCountries[Math.floor(Math.random() * randomCountries.length)];
+		let correctCountry;
+		do {
+			correctCountry = randomCountries[Math.floor(Math.random() * randomCountries.length)];
+		} while (usedQuestions.includes(correctCountry.name.common));
 
 		const incorrectCountries = [];
-		const usedRegions = [correctCountry.region];
-
 		while (incorrectCountries.length < 3) {
 			const randomCountry = randomCountries[Math.floor(Math.random() * randomCountries.length)];
-
-			if (
-				randomCountry !== correctCountry &&
-				!incorrectCountries.includes(randomCountry) &&
-				!usedRegions.includes(randomCountry.region)
-			) {
+			if (randomCountry !== correctCountry && !incorrectCountries.includes(randomCountry)) {
 				incorrectCountries.push(randomCountry);
-				usedRegions.push(randomCountry.region);
 			}
 		}
+
+		const generateUniqueOptions = (getField) => {
+			const uniqueOptions = new Set();
+			incorrectCountries.forEach((country) => uniqueOptions.add(getField(country)));
+			uniqueOptions.add(getField(correctCountry)); // Добавляем правильный ответ
+
+			// Дополняем варианты до 4 значений, если их меньше
+			while (uniqueOptions.size < 4) {
+				const randomCountry = randomCountries[Math.floor(Math.random() * randomCountries.length)];
+				uniqueOptions.add(getField(randomCountry));
+			}
+
+			return Array.from(uniqueOptions).sort(() => Math.random() - 0.5);
+		};
 
 		const questionTemplates = [
 			{
 				question: `What is the capital of ${correctCountry.name.common}?`,
-				correctAnswer: correctCountry.capital ? correctCountry.capital[0] : 'Unknown',
-				options: [
-					...(incorrectCountries.map((c) => (c.capital ? c.capital[0] : 'Unknown'))),
-					correctCountry.capital ? correctCountry.capital[0] : 'Unknown',
-				].sort(() => Math.random() - 0.5),
+				correctAnswer: correctCountry.capital[0],
+				options: generateUniqueOptions((country) => country.capital[0]),
 			},
 			{
 				question: `In what region is ${correctCountry.name.common} located?`,
 				correctAnswer: correctCountry.region,
-				options: [
-					...(incorrectCountries.map((c) => c.region)),
-					correctCountry.region,
-				].sort(() => Math.random() - 0.5),
+				options: generateUniqueOptions((country) => country.region),
+			},
+			{
+				question: `Which country does this flag belong to:`,
+				correctAnswer: correctCountry.name.common,
+				options: generateUniqueOptions((country) => country.name.common),
+				flag: correctCountry.flags.png,
 			},
 		];
 
 		const randomQuestion = questionTemplates[Math.floor(Math.random() * questionTemplates.length)];
 
+		setUsedQuestions((prev) => [...prev, correctCountry.name.common]);
+
 		setQuestionData({
 			question: randomQuestion.question,
 			options: randomQuestion.options,
 			correctAnswer: randomQuestion.correctAnswer,
+			flag: randomQuestion.flag || null,
 		});
 		setAnswered(false);
 	};
 
 	const answerChoice = (option) => {
+		if (answered || answerCounter > 10) return;
+
 		setSelectedAnswer(option);
 		setAnswered(true);
 
+		if (option === questionData.correctAnswer) {
+			setCorrectAnswers((prev) => prev + 1);
+		}
+
 		setTimeout(() => {
 			setSelectedAnswer(null);
-			setAnswerCounter(prev => prev + 1);
-			generateQuestion();
+			setAnswered(false);
+			setAnswerCounter((prev) => prev + 1);
+
+			if (answerCounter < 10) {
+				generateQuestion();
+			}
 		}, 3000);
 	};
 
@@ -81,7 +105,12 @@ export default function Questions({ randomCountries, setAnswerCounter }) {
 	return (
 		<>
 			<div className='questions'>
-				<h1 className='question'>{questionData.question}</h1>
+				<div className='question-flag-cont'>
+					<h1 className='question'>{questionData.question}</h1>
+					{questionData.flag && (
+						<img src={questionData.flag} alt="Country flag" className="flag-image" />
+					)}
+				</div>
 				<ul className='answers'>
 					{questionData.options.map((option, index) => (
 						<li
@@ -89,6 +118,7 @@ export default function Questions({ randomCountries, setAnswerCounter }) {
 							className={`answer`}
 							style={{
 								background: selectedAnswer === option ? 'linear-gradient(#E65895, #BC6BE8)' : '',
+								pointerEvents: answered ? 'none' : 'auto',
 							}}
 							onClick={() => answerChoice(option)}>
 							{option}

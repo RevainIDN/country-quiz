@@ -1,0 +1,39 @@
+.result {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 10px;
+	padding: 20px;
+}
+
+.result-image {
+	width: 100%;
+}
+
+.result-counter {
+	font-size: 1.25rem;
+}
+
+.result-repeat {
+	margin-top: 30px;
+	padding: 20px 100px;
+	color: inherit;
+	background: linear-gradient(#E65895, #BC6BE8);
+	border-radius: 12px;
+	font-size: 1.25rem;
+	font-weight: 500;
+}
+
+@media (max-width: 600px) {
+	.result {
+		padding: 10px;
+	}
+
+	.result-title {
+		font-size: 1.5rem;
+	}
+
+	.result-repeat {
+		padding: 20px 50px;
+	}
+}

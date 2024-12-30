@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react'
 import './App.css'
 import Steps from './components/Steps'
 import Questions from './components/Questions'
+import Result from './components/Result'
 
 export default function App() {
   const [countries, setCountries] = useState([]);
   const [randomCountries, setRandomCountries] = useState([]);
   const [answerCounter, setAnswerCounter] = useState(1);
+  const [correctAnswers, setCorrectAnswers] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -18,8 +20,17 @@ export default function App() {
           try {
             const response = await fetch('https://restcountries.com/v3.1/all');
             const data = await response.json();
-            setCountries(data);
-            localStorage.setItem('countries', JSON.stringify(data));
+            const filteredData = data.filter(
+              (country) =>
+                country.capital &&
+                country.capital.length > 0 &&
+                country.region &&
+                country.flags &&
+                country.currencies &&
+                Object.keys(country.currencies).length > 0
+            );
+            setCountries(filteredData);
+            localStorage.setItem('countries', JSON.stringify(filteredData));
           } catch (error) {
             console.error('Error loading data:', error)
           }
@@ -33,7 +44,6 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    console.log('Countries changed:', countries);
     if (countries.length > 0) {
       const selectRandomCountries = () => {
         const selected = [];
@@ -54,14 +64,27 @@ export default function App() {
 
   return (
     <div className='game-quiz'>
-      <h1 className='title'>Country Quiz</h1>
-      <Steps
-        answerCounter={answerCounter}
-      />
-      <Questions
-        randomCountries={randomCountries}
-        setAnswerCounter={setAnswerCounter}
-      />
+      {answerCounter <= 10 ? (
+        <>
+          <h1 className='title'>Country Quiz</h1>
+          <Steps
+            answerCounter={answerCounter}
+            correctAnswers={correctAnswers}
+          />
+          <Questions
+            randomCountries={randomCountries}
+            answerCounter={answerCounter}
+            setAnswerCounter={setAnswerCounter}
+            setCorrectAnswers={setCorrectAnswers}
+          />
+        </>
+      ) : (
+        <Result
+          correctAnswers={correctAnswers}
+          setAnswerCounter={setAnswerCounter}
+          setCorrectAnswers={setCorrectAnswers}
+        />
+      )}
     </div>
   )
 }

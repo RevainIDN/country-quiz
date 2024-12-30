@@ -4,6 +4,12 @@
 	align-items: center;
 }
 
+.question-flag-cont {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
 .question {
 	max-width: 520px;
 	font-size: 1.5rem;
@@ -46,4 +52,10 @@
 
 .incorrect-answer {
 	background: 90% 50% / 24px no-repeat #393F6E url(/Close_round_fill.svg);
+}
+
+.flag-image {
+	width: 40px;
+	height: 28px;
+	transform: translateY(-50%);
 }
