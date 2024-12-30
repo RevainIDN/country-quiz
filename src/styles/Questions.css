@@ -20,6 +20,8 @@
 }
 
 .answer {
+	display: flex;
+	justify-content: center;
 	width: 300px;
 	cursor: pointer;
 	text-align: center;
@@ -30,10 +32,18 @@
 	font-weight: 700;
 }
 
+.answer-image {
+	margin-left: 10px;
+}
+
+.selected-answer {
+	background: linear-gradient(#E65895, #BC6BE8);
+}
+
 .correct-answer {
-	background: 90% 50% / 20px no-repeat #393F6E url(/Check_round_fill.svg);
+	background: 90% 50% / 24px no-repeat #393F6E url(/Check_round_fill.svg);
 }
 
 .incorrect-answer {
-	background: 90% 50% / 20px no-repeat #393F6E url(/Close_round_fill.svg);
+	background: 90% 50% / 24px no-repeat #393F6E url(/Close_round_fill.svg);
 }

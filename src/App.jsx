@@ -6,6 +6,7 @@ import Questions from './components/Questions'
 export default function App() {
   const [countries, setCountries] = useState([]);
   const [randomCountries, setRandomCountries] = useState([]);
+  const [answerCounter, setAnswerCounter] = useState(1);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,9 +30,10 @@ export default function App() {
     }
 
     fetchData();
-  }, [])
+  }, []);
 
   useEffect(() => {
+    console.log('Countries changed:', countries);
     if (countries.length > 0) {
       const selectRandomCountries = () => {
         const selected = [];
@@ -50,14 +52,15 @@ export default function App() {
     }
   }, [countries]);
 
-  console.log(randomCountries);
-
   return (
     <div className='game-quiz'>
       <h1 className='title'>Country Quiz</h1>
-      <Steps />
+      <Steps
+        answerCounter={answerCounter}
+      />
       <Questions
         randomCountries={randomCountries}
+        setAnswerCounter={setAnswerCounter}
       />
     </div>
   )

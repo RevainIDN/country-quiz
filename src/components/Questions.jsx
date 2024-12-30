@@ -1,7 +1,10 @@
 import '../styles/Questions.css';
 import { useState, useEffect } from 'react';
 
-export default function Questions({ randomCountries }) {
+export default function Questions({ randomCountries, setAnswerCounter }) {
+	const [selectedAnswer, setSelectedAnswer] = useState(null);
+	const [answered, setAnswered] = useState(false);
+
 	const [questionData, setQuestionData] = useState({
 		question: '',
 		options: [],
@@ -14,10 +17,18 @@ export default function Questions({ randomCountries }) {
 		const correctCountry = randomCountries[Math.floor(Math.random() * randomCountries.length)];
 
 		const incorrectCountries = [];
+		const usedRegions = [correctCountry.region];
+
 		while (incorrectCountries.length < 3) {
 			const randomCountry = randomCountries[Math.floor(Math.random() * randomCountries.length)];
-			if (randomCountry !== correctCountry && !incorrectCountries.includes(randomCountry)) {
+
+			if (
+				randomCountry !== correctCountry &&
+				!incorrectCountries.includes(randomCountry) &&
+				!usedRegions.includes(randomCountry.region)
+			) {
 				incorrectCountries.push(randomCountry);
+				usedRegions.push(randomCountry.region);
 			}
 		}
 
@@ -47,6 +58,18 @@ export default function Questions({ randomCountries }) {
 			options: randomQuestion.options,
 			correctAnswer: randomQuestion.correctAnswer,
 		});
+		setAnswered(false);
+	};
+
+	const answerChoice = (option) => {
+		setSelectedAnswer(option);
+		setAnswered(true);
+
+		setTimeout(() => {
+			setSelectedAnswer(null);
+			setAnswerCounter(prev => prev + 1);
+			generateQuestion();
+		}, 3000);
 	};
 
 	useEffect(() => {
@@ -61,8 +84,29 @@ export default function Questions({ randomCountries }) {
 				<h1 className='question'>{questionData.question}</h1>
 				<ul className='answers'>
 					{questionData.options.map((option, index) => (
-						<li key={index} className='answer'>
+						<li
+							key={index}
+							className={`answer`}
+							style={{
+								background: selectedAnswer === option ? 'linear-gradient(#E65895, #BC6BE8)' : '',
+							}}
+							onClick={() => answerChoice(option)}>
 							{option}
+							{answered && (
+								<img
+									src={
+										option === questionData.correctAnswer
+											? "Check_round_fill.svg"
+											: (option === selectedAnswer ? "Close_round_fill.svg" : "")
+									}
+									alt={
+										option === questionData.correctAnswer
+											? "Correct answer"
+											: (option === selectedAnswer ? "Incorrect answer" : "")
+									}
+									className="answer-image"
+								/>
+							)}
 						</li>
 					))}
 				</ul>
