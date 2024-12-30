@@ -19,9 +19,8 @@
 
 .answers {
 	position: relative;
-	display: flex;
-	justify-content: center;
-	flex-wrap: wrap;
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
 	gap: 25px;
 }
 
@@ -58,4 +57,23 @@
 	width: 40px;
 	height: 28px;
 	transform: translateY(-50%);
+	border-radius: 4px;
+}
+
+@media (max-width: 730px) {
+	.answer {
+		width: 200px;
+	}
+}
+
+@media (max-width: 600px) {
+	.answer {
+		width: 150px;
+	}
+}
+
+@media (max-width: 400px) {
+	.answer {
+		width: 100px;
+	}
 }

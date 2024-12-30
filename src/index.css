@@ -11,5 +11,6 @@
 body {
   background: center center / cover no-repeat url(/bg.jpg);
   height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
+  background-color: #272c54;
 }

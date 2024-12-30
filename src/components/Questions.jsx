@@ -14,7 +14,7 @@ export default function Questions({ randomCountries, answerCounter, setAnswerCou
 	});
 
 	const generateQuestion = () => {
-		if (!randomCountries || randomCountries.length < 4) return;
+		if (randomCountries.length < 4) return;
 
 		let correctCountry;
 		do {
@@ -32,9 +32,8 @@ export default function Questions({ randomCountries, answerCounter, setAnswerCou
 		const generateUniqueOptions = (getField) => {
 			const uniqueOptions = new Set();
 			incorrectCountries.forEach((country) => uniqueOptions.add(getField(country)));
-			uniqueOptions.add(getField(correctCountry)); // Добавляем правильный ответ
+			uniqueOptions.add(getField(correctCountry));
 
-			// Дополняем варианты до 4 значений, если их меньше
 			while (uniqueOptions.size < 4) {
 				const randomCountry = randomCountries[Math.floor(Math.random() * randomCountries.length)];
 				uniqueOptions.add(getField(randomCountry));
