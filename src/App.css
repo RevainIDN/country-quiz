@@ -1,6 +1,40 @@
 #root {
-  max-width: 1280px;
+  max-width: 980px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+}
+
+.game-quiz {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+
+  background-color: #343964;
+  border-radius: 12px;
+
+  margin-top: 5%;
+  padding: 30px;
+  padding-bottom: 70px;
+
+  font-size: 16px;
+}
+
+.title {
+  font-size: 1rem;
+  color: #8B8EAB;
+}
+
+@media (max-width: 1100px) {
+  #root {
+    max-width: 780px;
+    padding: 1.5rem;
+  }
+
+  .game-quiz {
+    padding: 20px;
+    padding-bottom: 40px;
+  }
 }

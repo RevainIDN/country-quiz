@@ -1,8 +1,15 @@
+@import './styles/reset.css';
+
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Be Vietnam Pro;
   line-height: 1.5;
   font-weight: 400;
 
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: #E2E4F3;
+}
+
+body {
+  background: center center / cover no-repeat url(/bg.jpg);
+  height: 100vh;
+  overflow: hidden;
 }
